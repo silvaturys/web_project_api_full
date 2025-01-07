@@ -1,0 +1,143 @@
+.elements{
+  margin: 40px auto 67px;
+  max-width: 880px;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
+  justify-content: center;
+  column-gap: 17px;
+}
+
+.element{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 282px;
+}
+
+.element__image{
+  max-width: 282px;
+  max-height: 282px;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+}
+
+.element__container{
+  background-color: #fff;
+  color: #000;
+  margin-bottom: 20px;
+  max-width: 282px;
+  max-height: 79px;
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 15px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.element__text{
+  color: #000000;
+  font-family: "Inter", "sans-serif";
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 29.05px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.element__button{
+  background-color: transparent;
+  cursor: pointer;
+  margin-bottom: 3px;
+  background-image: url(../images/heart.svg);
+  background-repeat: no-repeat;
+  border: none;
+  width: 21px;
+  height: 19px;
+  background-color: #fff;
+  padding: 0;
+ 
+}
+
+.element__button_trash{
+position: absolute;
+  width: 18px;
+  height: 19.3px;
+  top: 18px;
+  right: 15px;
+  background-image: url(../images/Trash.svg);
+  background-repeat: no-repeat;
+  border: none;
+  background-color: transparent;
+}
+
+.element__rectangle{
+  max-width: 282px;
+  max-height: 361px;
+}
+
+.element__icon{
+  cursor: pointer;
+  position: relative;
+}
+
+.element__icon-trash{
+  position: relative;
+  top: 35px;
+  left: 125px;
+}
+
+.elements__likes-number {
+  font-family: "Inter", "sans-serif";
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 15.7px;
+  border: none;
+  width: 21px;
+  height: 19px;
+  text-align: center;
+
+}
+
+.element__info-like{
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.elements__icon-active {
+  opacity: 1;
+  background-image: url("../images/Union.svg");
+}
+
+.element__icon-trash:hover{
+  opacity: 60%;
+}
+
+.element__icon:hover{
+  opacity: 50%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .elements {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  justify-content: center;
+  }
+  }
+
+@media screen and (max-width: 767px){
+  .elements{
+    display: grid;
+    grid-template-columns: repeat(1, auto);
+}
+}

@@ -1,0 +1,142 @@
+.profile__image{
+  background:#C4C4C4;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  object-fit: cover;
+  border-radius: 50%;
+  grid-area: avatar;
+}
+
+.profile__container{
+  max-width: 880px;
+  max-height: 120px;
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: 120px 403px 42px 315px;
+  grid-template-rows: 60px 60px;
+  grid-template-areas:
+    "avatar info edit add"
+    "avatar title title add";
+}
+
+.profile__name{
+  width: 373px;
+  height: 50px;
+  font-family: "Inter", "sans-serif";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 42px;
+  line-height: 48px;
+  color: #ffffff;
+  margin: 22px 0 0 30px;
+  grid-area: info;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.profile__edit-button{
+  grid-area: edit;
+  border: #ffffff 1px solid;
+  padding: px;
+  margin: 37px 0 0 18px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.profile__area{
+  height: 22px;
+  font-family: "Inter", "sans-serif";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+  margin: 15px 0 0 30px;
+  grid-area: title;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.profile__add-button{
+  grid-area: add;
+  border: #ffffff 2px solid;
+  margin: 34px 0 34px 165px;
+  padding: 13px 63px;
+  background-color: transparent;
+}
+
+.profile__edit-button:hover{
+  opacity: 60%;
+}
+
+.profile__add-button:hover{
+  opacity: 60%;
+}
+
+.profile__image:hover{
+  opacity: 60%;
+}
+
+.profile__avatar-container{
+display: flex;
+align-items: center;
+justify-content: center;
+height: 120px;
+}
+
+.profile__avatar-edit {
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  opacity: 0;
+  background-color: transparent;
+}
+
+.profile__avatar-container:hover .profile__image {
+  opacity: 0.3;
+}
+
+.profile__avatar-container:hover .profile__avatar-edit{
+  opacity: 1;
+}
+
+@media screen and (max-width: 768px){
+  .profile{
+    flex-direction: column;
+    align-items: center;
+    margin: 42px 19px 36px;
+  }
+
+  .profile__intro {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+  }
+
+  .profile__name{
+    font-size: 22px;
+    line-height: 26px;
+  }
+
+  .profile__edit-button{
+    margin-left: 10px;
+    margin-top:0px;
+  }
+
+  .profile__area{
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .profile__add-button{
+    padding: 17px 128px;
+  }
+
+}
+

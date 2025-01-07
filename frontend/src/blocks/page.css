@@ -1,0 +1,18 @@
+.page{
+  background-color: #000000;
+
+  width: 100%;
+  margin-inline: auto;
+}
+
+@media screen and (max-width: 1024px){
+  .page{
+    min-width: 768px;
+  }
+}
+
+@media screen and (max-width: 768px){
+  .page{
+    min-width: 320px;
+  }
+}
