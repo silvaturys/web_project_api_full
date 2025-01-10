@@ -3,11 +3,13 @@ import {CurrentUserContext }from '../contexts/CurrentUserContext';
 import PopupWithForm from './PopupWithForm';
 
 export default function EditProfile({ isOpen, onClose, onUpdateUser }) {
+  
   const currentUser = useContext(CurrentUserContext);
 
+
   // Variáveis de estado para os campos de formulário
-  const [name, setName] = useState(currentUser.name || ''); 
-  const [description, setDescription] = useState(currentUser.about || '');
+  const [name, setName] = useState(currentUser?.name); 
+  const [description, setDescription] = useState(currentUser?.about);
   const [isPatching, setIsPatching] = React.useState(false);
 
   // Atualizando valores dos inputs em tempo real

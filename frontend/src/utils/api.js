@@ -1,9 +1,26 @@
   class Api {
-    constructor(options) {
-      this.baseUrl = options.baseUrl;
-      this.headers = options.headers;
+    constructor({ baseUrl, headers }) {
+      this.baseUrl = baseUrl;
+      this.headers = headers;
     }
   
+    _getAuthHeaders() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return this._headers;  
+      }
+      return {
+        ...this._headers,
+        'Authorization': `Bearer ${token}`,
+      };
+    }
+
+    defaultProfile(token) {
+      return fetch(`${this._baseUrl}/users/me`, {
+        headers: this._getAuthHeaders(),
+      }).then(this._checkResponse);
+    }
+
     getUserInfo() {
       return fetch(`${this.baseUrl}/users/me`, {
         method: "GET",
@@ -201,12 +218,20 @@
 
   }
 
-  const api = new Api({
-    baseUrl: "https://around.nomoreparties.co/v1/web-ptbr-cohort-12",
-    headers: {
-      authorization: "7db9390b-a3cb-46e6-82c8-7e278b7c6b08",
-      "Content-Type": "application/json",
-    },
-  });
+ const api = new Api({
+  baseUrl: "http://localhost:3000",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
+// const api = new Api({
+//   baseUrl: "https://around.nomoreparties.co/v1/web-ptbr-cohort-12",
+//   headers: {
+//     authorization: "7db9390b-a3cb-46e6-82c8-7e278b7c6b08",
+//     "Content-Type": "application/json",
+//   },
+// });
 
   export default api;

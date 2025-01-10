@@ -1,7 +1,7 @@
-const express = require('express');
-const { getUsers, getUserById, createUser, updateProfile, updateAvatar } = require('../controllers/users');
+const {Router} = require('express');
+const { getUsers, getUserById, updateProfile, updateAvatar, getUserByMe } = require('../controllers/users');
 
-const router = express.Router();
+const router = Router();
 
 // Rota para obter todos os usuários
 router.get("/", getUsers);
@@ -9,8 +9,9 @@ router.get("/", getUsers);
 // Rota para obter um usuário por ID
 router.get("/:id", getUserById);
 
-// Rota para criar um novo usuário
-router.post("/", createUser);
+// Rota para obter os dados do usuário atual (protegida)
+console.log("teste2")
+router.get("/me", getUserByMe); // Rota para o usuário autenticado
 
 router.patch("/me", updateProfile); // Atualiza o perfil
 

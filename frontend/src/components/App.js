@@ -35,6 +35,8 @@ function App() {
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
   
+  const [token, setToken] = useState(localStorage.getItem('jwt') || '');
+
   function handleDeletePopupClick(card) {
     setCardToDelete(card); 
     setIsDeletePopupOpen(true); 
@@ -53,35 +55,82 @@ function App() {
     setIsDeletePopupOpen(false);
   }
 
-  useEffect(()=>{
-    if(localStorage.getItem('jwt')){
-      auth 
-        .getToken(localStorage.getItem('jwt'))
-        .then((data)=>{
-          console.log(data)
-            if(data){
-              setIsLogged(true);
-              setEmailUser(data.email);
-              navigate('/')
-            } else{
-              navigate('/signup')
-              throw new Error('Token invalido')
-            }
+
+  // useEffect(() => {
+  //   if (isLogged) {
+  //     api.defaultProfile(token).then((data) => {
+  //       setCurrentUser(data.data);
+  //     }).catch(err => console.log(err));
+
+  //     api.getInitialCards(token).then((data) => {
+  //       setCards(data.data);
+  //     }).catch(err => console.log(err));
+  //   }
+  // }, [isLogged, token]);
+
+
+  // useEffect(()=>{
+  //   const token = localStorage.getItem('token');
+  //   console.log('token app front',token)
+  //   if (token) {
+  //     auth.getToken(token)
+  //       .then((res) => {
+  //         if (res) {
+  //           setEmailUser(res.data.email);
+  //           setToken(token);
+  //           setIsLogged(true);
+  //           navigate("/", { replace: true });
+  //         }
+  //       })
+  //       .catch(err => console.log(err));
+  //   }
+  // },[]);
+
+
+  // function handleLogin(){
+  //   setIsLogged(true)
+  // }
+
+
+  // function signOff() {
+  //   localStorage.removeItem('jwt');
+  //   setToken('');
+  //   setIsLogged(false);
+  //   setEmailUser('');
+  //   navigate('/signin');
+  // }
+
+  useEffect(() => {
+    if (token) {
+      auth.getToken(token)
+        .then((data) => {
+          if (data) {
+            setIsLogged(true);
+            setEmailUser(data.email);
+            navigate('/');
+          } else {
+            throw new Error('Token inválido');
+          }
         })
-        .catch((error)=>{
-          console.log(error);
-          navigate('/signup')
-        })
+        .catch((err) => {
+          console.error(err);
+          signOff();
+        });
     }
-  },[isLogged, navigate]);
+  }, [token]);
 
-  function signOff(){
-    localStorage.removeItem('jwt')
-    setEmailUser("")    
+  function handleLogin(jwt) {
+    localStorage.setItem('jwt', jwt);
+    setToken(jwt);
+    setIsLogged(true);
   }
-
-  function handleLogin(){
-    setIsLogged(true)
+  
+  function signOff() {
+    localStorage.removeItem('jwt');
+    setToken('');
+    setIsLogged(false);
+    setEmailUser('');
+    navigate('/signin');
   }
 
 

@@ -27,20 +27,27 @@ const createCard = async (req, res) => {
   }
 };
 
-// Deleta um cartão por ID
+// Deleta um cartão por ID (modificado)
 const deleteCard = async (req, res) => {
   try {
-    console.log(req.params)
-    const user = await Card.findByIdAndDelete(req.params.id);
-    console.log(req.params)
-    if (!user) {
+    const card = await Card.findById(req.params.id);
+
+    if (!card) {
       return res.status(404).send({ message: 'Cartão não encontrado' });
     }
-    res.status(200).send(user);
+
+    // Verifica se o usuário autenticado é o dono do cartão
+    if (card.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ message: 'Você não tem permissão para excluir este cartão' });
+    }
+
+    await Card.findByIdAndDelete(req.params.id);
+    res.status(200).send({ message: 'Cartão excluído com sucesso' });
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status({ statusCode: 400, message: 'ID inválido' });
+      return res.status(400).send({ message: 'ID inválido' });
     }
+    res.status(500).send({ message: 'Erro ao excluir o cartão' });
   }
 };
 
