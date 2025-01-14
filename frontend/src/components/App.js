@@ -202,14 +202,6 @@ function App() {
       .catch((error) => console.error(error));
   }
 
-  async function handleCardDelete(card) {
-    try {
-      await api.deleteCard(card._id);
-      setCards((prevCards) => prevCards.filter((currentCard) => currentCard._id !== card._id));
-    } catch (err) {
-      console.log("Erro ao deletar o cartão:", err);
-    }
-  }
 
   function handleCardDelete(card) {
     if (!cardToDelete) {

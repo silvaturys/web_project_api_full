@@ -27,8 +27,9 @@
         headers: this.headers,
       })
         .then((res) => {
-          if (res.ok) {
-            return res.json();
+          if (res.ok) { 
+            const response=res.json()
+            return response.data;
           }
           return Promise.reject(`Error: ${res.status}`);
         })
@@ -44,7 +45,8 @@
       })
         .then((res) => {
           if (res.ok) {
-            return res.json();
+            const response=res.json()
+            return response.data;
           }
           return Promise.reject(`Error: ${res.status}`);
         })
@@ -64,7 +66,8 @@
       })
         .then((res) => {
           if (res.ok) {
-            return res.json();
+            const response=res.json()
+            return response.data;
           }
           return Promise.reject(`Error: ${res.status}`);
         })
@@ -83,7 +86,8 @@
       })
         .then((res) => {
           if (res.ok) {
-            return res.json();
+            const response=res.json()
+            return response.data;
           }
           
           return Promise.reject(`Error: ${res.status}`);
@@ -171,7 +175,8 @@
       })
         .then((res) => {
           if (res.ok) {
-            return res.json();
+            const response=res.json()
+            return response.data;
           }
           return Promise.reject(`Error: ${res.status}`);
         })
@@ -190,7 +195,8 @@
       })
         .then((res) => {
           if (res.ok) {
-            return res.json();
+            const response=res.json()
+            return response.data;
           }
           return Promise.reject(`Error: ${res.status}`);
         })
