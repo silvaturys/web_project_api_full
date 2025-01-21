@@ -9,7 +9,7 @@ export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
     const [isPatching, setIsPatching] = React.useState(false);
 
     React.useEffect(() => {
-        setLink(currentUser.avatar);
+        setLink(currentUser?.avatar);
       }, [currentUser]);
 
       function handleSubmit(e) {

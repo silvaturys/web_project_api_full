@@ -12,13 +12,14 @@ function InfoTooltip ({isSuccess,name,isOpen,onClose}){
             <img
               src={closeIcon}
               id={`close-icon-${name}`}
-              alt="icono de cierre"
+              alt="icone fechar"
               className="modal__close-icon info-close"
               onClick={onClose}
             />
             <div className="modal__content">
               <img src={icon}
                 className="modal__content_img"
+                alt="sucesso"
                 />
               <h4 className="modal__content-title">{message}</h4>
             </div>
