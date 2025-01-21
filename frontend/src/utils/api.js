@@ -1,243 +1,95 @@
-  class Api {
-    constructor({ baseUrl, headers }) {
-      this.baseUrl = baseUrl;
-      this.headers = headers;
-    }
-  
-    _getAuthHeaders() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        return this._headers;  
-      }
-      return {
-        ...this._headers,
-        'Authorization': `Bearer ${token}`,
-      };
-    }
-
-    defaultProfile(token) {
-      return fetch(`${this._baseUrl}/users/me`, {
-        headers: this._getAuthHeaders(),
-      }).then(this._checkResponse);
-    }
-
-    getUserInfo() {
-      return fetch(`${this.baseUrl}/users/me`, {
-        method: "GET",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) { 
-            const response=res.json()
-            return response.data;
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  
-    getInitialCards() {
-      return fetch(`${this.baseUrl}/cards`, {
-        method: "GET",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) {
-            const response=res.json()
-            return response.data;
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-    updateUserProfile(name, about) {
-      return fetch(`${this.baseUrl}/users/me`, {
-        method: "PATCH",
-        headers: this.headers,
-        body: JSON.stringify({
-          name,
-          about,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            const response=res.json()
-            return response.data;
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-
-    updateAvatar(avatar) {
-      return fetch(`${this.baseUrl}/users/me/avatar`, {
-        method: "PATCH",
-        headers: this.headers,
-        body: JSON.stringify({
-          avatar,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            const response=res.json()
-            return response.data;
-          }
-          
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-
-    createCard(link, name) {
-      return fetch(`${this.baseUrl}/cards`, {
-        method: "POST",
-        headers: this.headers,
-        body: JSON.stringify({
-          link,
-          name,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  
-    deleteCard(cardId) {
-      return fetch(`${this.baseUrl}/cards/${cardId}`, {
-        method: "DELETE",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  
-    addLike(cardId) {
-      return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-        method: "PUT",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    removeLike(cardId) {
-      return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-        method: "DELETE",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    editProfile(data) {
-      return fetch(`${this.baseUrl}/users/me`, {
-        method: "PATCH",
-        headers: this.headers,
-        body: JSON.stringify({
-          name: data.name,
-          about: data.about,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            const response=res.json()
-            return response.data;
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  
-    editAvatarProfile(data) {
-      return fetch(`${this.baseUrl}/users/me/avatar`, {
-        method: "PATCH",
-        headers: this.headers,
-        body: JSON.stringify({
-          avatar: data.avatarLink,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            const response=res.json()
-            return response.data;
-          }
-          return Promise.reject(`Error: ${res.status}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-    changeLikeCardStatus(cardId, like) {
-      const method = like ? "PUT" : "DELETE";
-      return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-        method: method,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject("Error: " + res.status);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
+class Api {
+  constructor({ baseUrl, headers }) {
+    this._baseUrl = baseUrl;
+    this._headers = headers;
   }
 
- const api = new Api({
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Error: ${res.status}`);
+  }
+
+  getInitialCards() {
+    return fetch(`${this._baseUrl}/cards`, {
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  getUserInfo() {
+    return fetch(`${this._baseUrl}/users/me`, {
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  editUserInfo(name, about) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({
+        name: name,
+        about: about,
+      }),
+    }).then(this._checkResponse);
+  }
+
+  addCard({ name, link }) {
+    return fetch(`${this._baseUrl}/cards`, {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        name: name,
+        link: link,
+      }),
+    }).then(this._checkResponse);
+  }
+
+  deleteCard(cardId) {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+      method: "DELETE",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  addLikes(cardId) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      method: "PUT",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  removeLikes(cardId) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      method: "DELETE",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    if (isLiked) {
+      return this.removeLikes(cardId);
+    }
+    return this.addLikes(cardId);
+  }
+
+  editAvatar({ avatar }) {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({ avatar: avatar }),
+    }).then(this._checkResponse);
+  }
+}
+
+const token = localStorage.getItem('token');
+
+const api = new Api({
   baseUrl: "http://localhost:3000",
   headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
   },
 });
 
-// const api = new Api({
-//   baseUrl: "https://around.nomoreparties.co/v1/web-ptbr-cohort-12",
-//   headers: {
-//     authorization: "7db9390b-a3cb-46e6-82c8-7e278b7c6b08",
-//     "Content-Type": "application/json",
-//   },
-// });
-
-  export default api;
+export default api;

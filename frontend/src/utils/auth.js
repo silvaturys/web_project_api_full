@@ -1,66 +1,79 @@
-const base_url = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3000';
+const ERROR_INVALID_DATA = 400;
+const ERROR_NOT_FOUND = 401;
 
 export const register = (email, password) => {
-  return fetch(`${base_url}/signup`, {
+  return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      email,
-      password
-    }),
+    body: JSON.stringify({ email, password }),
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }else {
-      return Promise.reject(res.status);}
+    .then((response) => {
+      return response.json();
     })
-    .catch((error) => {
-      console.log(`Error: ${error}`);
-    });
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((res) =>
+      res
+        .status(ERROR_INVALID_DATA)
+        .send({ message: 'Um dos campos foi preenchido incorretamente' })
+    );
 };
 
 export const authorize = (email, password) => {
-  return fetch(`${base_url}/signin`, {
+  return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
-
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-
     body: JSON.stringify({ email, password }),
   })
-    .then((res) => res.json())
+    .then((response) => response.json())
     .then((data) => {
       if (data.token) {
-        localStorage.setItem('jwt', data.token);
-
+        localStorage.setItem('token', data.token);
         return data;
-      } else {
-        return;
       }
     })
-
-    .catch((err) => {
-      return console.log(`Error: ${err}`);
+    .catch((err, res) => {
+      if (err.name === 'ValidationError') {
+        res
+          .status(ERROR_INVALID_DATA)
+          .send({ message: 'Um dos campos foi preenchido incorretamente' });
+      } else {
+        res.status(ERROR_NOT_FOUND).send({
+          message: 'O usuário com o e-mail especificado não encontrado',
+        });
+      }
     });
 };
 
-export const getToken = (token) => {
-  return fetch(`${base_url}/users/me`, {
+export const checkToken = (token) => {
+  return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
   })
     .then((res) => res.json())
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => {
-      return console.log(`Error: ${err}`);
+    .then((data) => data)
+    .catch((err, res) => {
+      if (err.name === 'ValidationError') {
+        res.status(ERROR_INVALID_DATA).send({
+          message: 'Token não fornecido ou fornecido em formato errado',
+        });
+      } else {
+        res.status(ERROR_NOT_FOUND).send({
+          message: 'O token fornecido é inválido',
+        });
+      }
     });
 };

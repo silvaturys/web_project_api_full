@@ -51,7 +51,7 @@ export default function Main({
       </div>
     </section>
 <section className="elements">
-      {cards.map((item) => (
+      {cards?.map((item) => (
         <Card 
         key={item._id} 
         data={item}

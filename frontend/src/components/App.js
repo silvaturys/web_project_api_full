@@ -5,7 +5,7 @@ import ImagePopup from "./ImagePopup";
 import { useState, useEffect } from "react";
 import api from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { Routes, Route, useNavigate} from "react-router-dom"
+import { Routes, Route, useNavigate,} from "react-router-dom"
 import EditProfile from "./EditProfile";
 import EditAvatar from "./EditAvatar";
 import NewCard from "./NewCard";
@@ -14,6 +14,7 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth"
+
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -25,17 +26,20 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
 
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const [emailUser, setEmailUser] = useState("");
   const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState({})
+  const [currentUser, setCurrentUser] = useState({
+    name: " ",
+    about: " ",
+    avatar: " ",
+  })
   const [cardToDelete, setCardToDelete] = useState(null);
  
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
-  
-  const [token, setToken] = useState(localStorage.getItem('jwt') || '');
+
 
   function handleDeletePopupClick(card) {
     setCardToDelete(card); 
@@ -57,20 +61,46 @@ function App() {
 
 
   // useEffect(() => {
+  //   if (token) {
+  //     auth.getToken(token)
+  //       .then((data) => {
+  //         if (data) {
+  //           setIsLogged(true);
+  //           setEmailUser(data.email);
+  //           navigate('/');
+  //         } else {
+  //           throw new Error('Token inválido');
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         signOff();
+  //       });
+  //   }
+  // }, [token]);
+
+  // function handleLogin(jwt) {
+  //   localStorage.setItem('jwt', jwt);
+  //   setToken(jwt);
+  //   setIsLogged(true);
+  // }
+
+  // useEffect(() => {
   //   if (isLogged) {
   //     api.defaultProfile(token).then((data) => {
-  //       setCurrentUser(data.data);
+  //       // setCurrentUser(data.data);
+  //       console.log("teste", data)
   //     }).catch(err => console.log(err));
 
   //     api.getInitialCards(token).then((data) => {
-  //       setCards(data.data);
+  //       console.log(data)
+  //       setCards(data?.data);
   //     }).catch(err => console.log(err));
   //   }
   // }, [isLogged, token]);
 
 
   // useEffect(()=>{
-  //   const token = localStorage.getItem('token');
   //   console.log('token app front',token)
   //   if (token) {
   //     auth.getToken(token)
@@ -84,68 +114,64 @@ function App() {
   //       })
   //       .catch(err => console.log(err));
   //   }
-  // },[]);
+  // },[isLogged]);
 
-
-  // function handleLogin(){
-  //   setIsLogged(true)
-  // }
-
-
-  // function signOff() {
-  //   localStorage.removeItem('jwt');
-  //   setToken('');
-  //   setIsLogged(false);
-  //   setEmailUser('');
-  //   navigate('/signin');
-  // }
-
-  useEffect(() => {
-    if (token) {
-      auth.getToken(token)
-        .then((data) => {
-          if (data) {
-            setIsLogged(true);
-            setEmailUser(data.email);
-            navigate('/');
-          } else {
-            throw new Error('Token inválido');
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          signOff();
-        });
-    }
-  }, [token]);
-
-  function handleLogin(jwt) {
-    localStorage.setItem('jwt', jwt);
-    setToken(jwt);
+function handleLogin() {
     setIsLogged(true);
   }
-  
-  function signOff() {
-    localStorage.removeItem('jwt');
-    setToken('');
+
+ function signOff() {
     setIsLogged(false);
-    setEmailUser('');
-    navigate('/signin');
+    localStorage.removeItem('token');
+    Navigate('/login');
   }
 
+  // useEffect (() => {
+  //   api.getUserInfo().then((ApiUserInfo) => {
+  //     setCurrentUser(ApiUserInfo)
+  //   })
+  //   .catch((err) => {
+  //     console.log("Erro ao carregar dados do usuário: ", err);
+  //   });
+  // }, []);
 
-  useEffect (() => {
-    api.getUserInfo().then((ApiUserInfo) => {
-      setCurrentUser(ApiUserInfo)
-    })
-    .catch((err) => {
-      console.log("Erro ao carregar dados do usuário: ", err);
-    });
-  }, []);
+
+
+  useEffect(() => {
+    
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      auth.checkToken(token).then((res) => {
+          if (res) {
+            setIsLogged(true);
+            Navigate('/');
+            setEmailUser(res.data.email);
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+       api.getInitialCards(token).then((initialCardsResponse) => {
+           setCards(initialCardsResponse.data);
+         }).catch((error) => {
+           console.error('Erro ao buscar dados dos cartões:', error);
+         });
+
+       api.getUserInfo().then((userInfoResponse) => {
+           setCurrentUser(userInfoResponse.data);
+         }).catch((error) => {
+           console.error('Erro ao buscar informações do usuário:', error);
+         });
+    } else {
+      setIsLogged(false);
+    }
+  }, [Navigate, isLogged, emailUser]);
+
+
 
   function handleUpdateUser({ name, about }) {
     api
-      .updateUserProfile(name, about)
+      .editUserInfo(name, about)
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         closeAllPopups();
@@ -157,7 +183,7 @@ function App() {
 
   function handleUpdateAvatar({ avatar }) {
     api
-      .updateAvatar(avatar)
+      .editAvatar(avatar)
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         closeAllPopups();
@@ -169,7 +195,7 @@ function App() {
 
   function handleNewCardSubmit({ link, name }) {
     api
-      .createCard(link, name)
+      .addCard(link, name)
       .then((newCard) => {
         setCards([newCard, ...cards]); // Atualiza o novo card
         closeAllPopups();
@@ -217,9 +243,10 @@ function App() {
       })
       .catch((err) => console.error(`Erro ao eliminar o cartao: ${err}`));
   }
-
+console.log(currentUser)
   return (
-    <CurrentUserContext.Provider value={currentUser}>
+    <CurrentUserContext.Provider value={{currentUser}}>
+      <div className="page">
       <Routes>
         <Route element={<ProtectedRoute loggedIn={isLogged} />}>
         <Route
@@ -295,7 +322,7 @@ function App() {
               }
               />
           </Routes>
-     <div className="page">
+     
       <Footer />
      </div>
     </CurrentUserContext.Provider>
