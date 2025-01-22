@@ -5,12 +5,7 @@ import PopupWithForm from './PopupWithForm';
 export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
     const currentUser = useContext(CurrentUserContext);
     const avatarRef = useRef("");
-    const [link, setLink] = useState("");
     const [isPatching, setIsPatching] = React.useState(false);
-
-    React.useEffect(() => {
-        setLink(currentUser?.avatar);
-      }, [currentUser]);
 
       function handleSubmit(e) {
         e.preventDefault();
@@ -36,7 +31,6 @@ export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
           placeholder="Link da imagem"
           required
           ref={avatarRef}
-          defaultValue={link} 
         />
         <span className="input-link-error popup__error" id="input-link-error">
           Por favor, introduza um endereço da web.

@@ -182,10 +182,11 @@ function handleLogin() {
       });
   }
 
-  function handleUpdateAvatar({ avatar }) {
+  function handleUpdateAvatar({avatar}) {
     api
       .editAvatar(avatar)
       .then((updatedUserData) => {
+        console.log(updatedUserData)
         setCurrentUser(updatedUserData);
         closeAllPopups();
       })
