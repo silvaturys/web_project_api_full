@@ -158,6 +158,7 @@ function handleLogin() {
          });
 
        api.getUserInfo().then((userInfoResponse) => {
+  console.log(userInfoResponse.data, "set current user")
            setCurrentUser(userInfoResponse.data);
          }).catch((error) => {
            console.error('Erro ao buscar informações do usuário:', error);
@@ -243,9 +244,8 @@ function handleLogin() {
       })
       .catch((err) => console.error(`Erro ao eliminar o cartao: ${err}`));
   }
-console.log(currentUser)
   return (
-    <CurrentUserContext.Provider value={{currentUser}}>
+    <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
       <Routes>
         <Route element={<ProtectedRoute loggedIn={isLogged} />}>
