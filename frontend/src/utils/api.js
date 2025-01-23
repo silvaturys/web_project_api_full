@@ -31,10 +31,10 @@ class Api {
         name: name,
         about: about,
       }),
-    }).then(this._checkResponse);
+    }).then(this._checkResponse) .then(res => res.data);;
   }
 
-  addCard({ name, link }) {
+  addCard( name, link ) {
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
       headers: this._headers,

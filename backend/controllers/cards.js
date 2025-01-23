@@ -15,12 +15,14 @@ const createCard = async (req, res) => {
   const { name, link } = req.body;
   try {
     const card = await Card.create({
+
       name,
       link,
       owner: req.user._id,
     });
     res.status(201).send(card);
   } catch (err) {
+    console.log(err)
     if (err.name === 'ValidationError') {
       return next({ statusCode: 400, message: 'Dados inválidos ao criar cartão' });
     }

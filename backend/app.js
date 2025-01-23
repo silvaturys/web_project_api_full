@@ -28,9 +28,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup',createUser);
 
-
+app.use(jwtMiddleware)
 app.use('/users' ,users);
 app.use('/cards' ,cards);
 

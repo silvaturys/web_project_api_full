@@ -158,7 +158,6 @@ function handleLogin() {
          });
 
        api.getUserInfo().then((userInfoResponse) => {
-  console.log(userInfoResponse.data, "set current user")
            setCurrentUser(userInfoResponse.data);
          }).catch((error) => {
            console.error('Erro ao buscar informações do usuário:', error);
@@ -195,9 +194,9 @@ function handleLogin() {
       });
   }
 
-  function handleNewCardSubmit({ link, name }) {
+  function handleNewCardSubmit({ name, link }) {
     api
-      .addCard(link, name)
+      .addCard(name, link)
       .then((newCard) => {
         setCards([newCard, ...cards]); // Atualiza o novo card
         closeAllPopups();
@@ -210,6 +209,7 @@ function handleLogin() {
   useEffect(() => {
     api.getInitialCards()
       .then((cardsData) => {
+        console.log(cardsData)
         setCards(cardsData);
       })
       .catch((err) => {
