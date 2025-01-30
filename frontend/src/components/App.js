@@ -151,12 +151,6 @@ function handleLogin() {
         }).catch((err) => {
           console.log(err);
         });
-       api.getInitialCards(token).then((initialCardsResponse) => {
-           setCards(initialCardsResponse.data);
-         }).catch((error) => {
-           console.error('Erro ao buscar dados dos cartões:', error);
-         });
-
        api.getUserInfo().then((userInfoResponse) => {
            setCurrentUser(userInfoResponse.data);
          }).catch((error) => {
@@ -198,7 +192,10 @@ function handleLogin() {
     api
       .addCard(name, link)
       .then((newCard) => {
-        setCards([newCard, ...cards]); // Atualiza o novo card
+        console.log(cards)
+        setCards( (prevState)=>{
+          return [newCard, ...prevState]
+        } ); // Atualiza o novo card
         closeAllPopups();
       })
       .catch((err) => {
