@@ -60,61 +60,6 @@ function App() {
   }
 
 
-  // useEffect(() => {
-  //   if (token) {
-  //     auth.getToken(token)
-  //       .then((data) => {
-  //         if (data) {
-  //           setIsLogged(true);
-  //           setEmailUser(data.email);
-  //           navigate('/');
-  //         } else {
-  //           throw new Error('Token inválido');
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //         signOff();
-  //       });
-  //   }
-  // }, [token]);
-
-  // function handleLogin(jwt) {
-  //   localStorage.setItem('jwt', jwt);
-  //   setToken(jwt);
-  //   setIsLogged(true);
-  // }
-
-  // useEffect(() => {
-  //   if (isLogged) {
-  //     api.defaultProfile(token).then((data) => {
-  //       // setCurrentUser(data.data);
-  //       console.log("teste", data)
-  //     }).catch(err => console.log(err));
-
-  //     api.getInitialCards(token).then((data) => {
-  //       console.log(data)
-  //       setCards(data?.data);
-  //     }).catch(err => console.log(err));
-  //   }
-  // }, [isLogged, token]);
-
-
-  // useEffect(()=>{
-  //   console.log('token app front',token)
-  //   if (token) {
-  //     auth.getToken(token)
-  //       .then((res) => {
-  //         if (res) {
-  //           setEmailUser(res.data.email);
-  //           setToken(token);
-  //           setIsLogged(true);
-  //           navigate("/", { replace: true });
-  //         }
-  //       })
-  //       .catch(err => console.log(err));
-  //   }
-  // },[isLogged]);
 
 function handleLogin() {
     setIsLogged(true);
@@ -125,15 +70,6 @@ function handleLogin() {
     localStorage.removeItem('token');
     Navigate('/login');
   }
-
-  // useEffect (() => {
-  //   api.getUserInfo().then((ApiUserInfo) => {
-  //     setCurrentUser(ApiUserInfo)
-  //   })
-  //   .catch((err) => {
-  //     console.log("Erro ao carregar dados do usuário: ", err);
-  //   });
-  // }, []);
 
 
 
@@ -194,7 +130,7 @@ function handleLogin() {
       .then((newCard) => {
         console.log(cards)
         setCards( (prevState)=>{
-          return [newCard, ...prevState]
+          return [newCard.data, ...prevState]
         } ); // Atualiza o novo card
         closeAllPopups();
       })
@@ -207,7 +143,7 @@ function handleLogin() {
     api.getInitialCards()
       .then((cardsData) => {
         console.log(cardsData)
-        setCards(cardsData);
+        setCards(cardsData.data);
       })
       .catch((err) => {
         console.log("Erro ao carregar os cartões: ", err);
@@ -216,12 +152,12 @@ function handleLogin() {
 
 
   async function handleCardLike(card) {
-    const isLiked = card.likes.some(user => user._id === currentUser._id);
-    
+    const isLiked = card.likes.some(like => like === currentUser._id);
+   
     await api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) => state.map((currentCard) => 
-          currentCard._id === card._id ? newCard : currentCard
+          currentCard._id === card._id ? newCard.data : currentCard
         ));
       })
       .catch((error) => console.error(error));

@@ -5,13 +5,13 @@ export default function Card({ data, onCardClick, onCardDelete, onCardLike }) {
     const {link, likes, name, owner} = data;
     const currentUser = useContext(CurrentUserContext);
 
-    const isOwn = owner._id === currentUser._id;
-
+    const isOwn = owner === currentUser._id;
     const cardDeleteButtonClassName = `element__button_trash ${
         isOwn ? "element__button_trash_visible" : "element__button_trash_hidden"
       }`;
 
-    const isLiked = likes.some((user) => user._id === currentUser._id);
+
+    const isLiked = likes.some((user) => user === currentUser._id);
 
     const cardLikeButtonClassName = `element__button ${isLiked ? "elements__icon-active" : ""}`;
 

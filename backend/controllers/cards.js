@@ -1,94 +1,66 @@
-const Card = require("../models/card");
+const Card = require('../models/card');
+const { NotFoundError, InvalidError, ServerError } = require('../middlewares/errors');
+const ERROR_CODE = 400;
 
-// Retorna todos os cartões
-const getCards = async (req, res) => {
+exports.getAllCards = async (req, res,next) => {
   try {
-    const cards = await Card.find({});
-    res.status(200).send(cards);
-  } catch (err) {
-    res.status(500).send({ message: 'Erro ao buscar cartões' });
+    const cards = await Card.find();
+    res.json({ data: cards });
+  } catch (error) {
+    next(ServerError('Ha ocurrido un error en el servidor.'));
   }
 };
 
-// Cria um novo cartão
-const createCard = async (req, res) => {
-  const { name, link } = req.body;
+exports.createCard = async (req, res,next) => {
   try {
-    const card = await Card.create({
-
-      name,
-      link,
-      owner: req.user._id,
-    });
-    res.status(201).send(card);
-  } catch (err) {
-    console.log(err)
-    if (err.name === 'ValidationError') {
-      return next({ statusCode: 400, message: 'Dados inválidos ao criar cartão' });
-    }
+    const { name, link } = req.body;
+    const newCard = await Card.create({ name, link, owner: req.user._id });
+    res.status(201).json({ data: newCard });
+  } catch (error) {
+    next(InvalidError('Datos inválidos proporcionados para crear la tarjeta.'));
   }
 };
 
-// Deleta um cartão por ID (modificado)
-const deleteCard = async (req, res) => {
+exports.deleteCardById = async (req, res) => {
   try {
-    const card = await Card.findById(req.params.id);
-
-    if (!card) {
-      return res.status(404).send({ message: 'Cartão não encontrado' });
+    const deletedCard = await Card.findByIdAndDelete(req.params.cardId);
+    if (!deletedCard) {
+      return next(NotFoundError('Tarjeta no encontrada'));
     }
-
-    // Verifica se o usuário autenticado é o dono do cartão
-    if (card.owner.toString() !== req.user._id.toString()) {
-      return res.status(403).send({ message: 'Você não tem permissão para excluir este cartão' });
-    }
-
-    await Card.findByIdAndDelete(req.params.id);
-    res.status(200).send({ message: 'Cartão excluído com sucesso' });
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return res.status(400).send({ message: 'ID inválido' });
-    }
-    res.status(500).send({ message: 'Erro ao excluir o cartão' });
+    res.json({ message: 'Card deleted successfully' });
+  } catch (error) {
+    next(ServerError('Ha ocurrido un error en el servidor.'));
   }
 };
 
-const likeCard = async (req, res) => {
+exports.likeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $addToSet: { likes: req.user._id } }, // Adiciona o _id do usuário, se não estiver presente
+      { $addToSet: { likes: req.user._id } },
       { new: true }
     );
     if (!card) {
-      return res.status(404).send({ message: 'Cartão não encontrado' });
+      return next(NotFoundError('Tarjeta no encontrada'));
     }
-    res.status(200).send(card);
-  } catch (err) {
-    res.status(400).send({ message: 'Erro ao curtir o cartão' });
+    res.json({ data: card });
+  } catch (error) {
+    next(error);
   }
 };
 
-const dislikeCard = async (req, res) => {
+exports.dislikeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $pull: { likes: req.user._id } }, // Remove o _id do usuário do array de likes
+      { $pull: { likes: req.user._id } },
       { new: true }
     );
     if (!card) {
-      return res.status(404).send({ message: 'Cartão não encontrado' });
+      return next(NotFoundError('Tarjeta no encontrada'));
     }
-    res.status(200).send(card);
-  } catch (err) {
-    res.status(400).send({ message: 'Erro ao descurtir o cartão' });
+    res.json({ data: card });
+  } catch (error) {
+    next(error);
   }
-};
-
-module.exports = {
-  getCards,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard
 };

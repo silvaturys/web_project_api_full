@@ -53,24 +53,25 @@ class Api {
   }
 
   addLikes(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes/`, {
       method: "PUT",
       headers: this._headers,
     }).then(this._checkResponse);
   }
 
   removeLikes(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: this._headers,
     }).then(this._checkResponse);
   }
 
   changeLikeCardStatus(cardId, isLiked) {
+    console.log(cardId, isLiked)
     if (isLiked) {
-      return this.removeLikes(cardId);
+      return this.addLikes(cardId);
     }
-    return this.addLikes(cardId);
+    return this.removeLikes(cardId);
   }
 
   editAvatar(avatar) {

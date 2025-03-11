@@ -1,18 +1,24 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const { celebrate, Joi } = require('celebrate');
+const { jwtMiddleware } = require('../middlewares/auth');
+const { validateURL } = require('../middlewares/validator');
+
 const router = express.Router();
-const { getCards, createCard, deleteCard, likeCard, dislikeCard } = require("../controllers/cards");
+const cardController = require('../controllers/cards');
 
-// Retorna todos os cartões
-router.get('/', getCards);
 
-// Cria um novo cartão
-router.post('/', createCard);
+router.get('/',jwtMiddleware, cardController.getAllCards);
+router.post('/',jwtMiddleware, celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().custom(validateURL),
+  }),
+}), cardController.createCard);
 
-// Deleta um cartão por ID
-router.delete('/:id', deleteCard);
-
-router.put("/:cardId/likes", likeCard); // Curte um cartão
-
-router.delete("/:cardId/likes", dislikeCard); // Descurte um cartão
+router.delete('/:cardId',jwtMiddleware, cardController.deleteCardById);
+router.put('/:cardId/likes',jwtMiddleware, cardController.likeCard);
+router.delete('/:cardId/likes',jwtMiddleware, cardController.dislikeCard);
 
 module.exports = router;
