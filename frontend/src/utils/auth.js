@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://web-project-api-full-r2xt.onrender.com';
 const ERROR_INVALID_DATA = 400;
 const ERROR_NOT_FOUND = 401;
 
