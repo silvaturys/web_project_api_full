@@ -14,9 +14,13 @@ export default function Main({
   onCardLike,
   onCardDelete
 }){
-console.log(cards)
+
   const currentUser= useContext(CurrentUserContext)
   if (!currentUser) return null 
+
+  // Cria uma cópia do array e inverte a ordem
+  const reversedCards = cards ? [...cards].reverse() : [];
+
     return(
         <main className="content">
     {/*-----------------------------AREA DO PERFIL---------------------------*/}
@@ -51,7 +55,7 @@ console.log(cards)
       </div>
     </section>
 <section className="elements">
-      {cards?.map((item) => (
+      {reversedCards?.map((item) => (
         <Card 
         key={item._id} 
         data={item}

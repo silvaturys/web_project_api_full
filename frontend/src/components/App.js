@@ -123,19 +123,18 @@ function handleLogin() {
         console.error(`Erro ao atualizar o avatar: ${err}`); // Se há um erro, será exibido no console;
       });
   }
-
+  
   function handleNewCardSubmit({ name, link }) {
     api
       .addCard(name, link)
       .then((newCard) => {
-        console.log(cards)
-        setCards( (prevState)=>{
-          return [newCard.data, ...prevState]
-        } ); // Atualiza o novo card
+        console.log(cards);
+        // Adiciona o novo card ao final do array
+        setCards((prevState) => [...prevState, newCard.data]);
         closeAllPopups();
       })
       .catch((err) => {
-        console.error(`Erro ao adicionar um novo card ${err}`); // Se há um erro, será exibido no console;
+        console.error(`Erro ao adicionar um novo card ${err}`);
       });
   }
 
